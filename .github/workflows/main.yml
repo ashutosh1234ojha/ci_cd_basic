@@ -27,7 +27,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Upload html test report
-        uses: actions/upload-artifact@4
+        uses: actions/upload-artifact@v4
         with:
           name: lint.html
           path: app/build/reports/lint-results-debug.html

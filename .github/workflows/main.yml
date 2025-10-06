@@ -1,16 +1,9 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -25,3 +18,20 @@ jobs:
         with:
           name: lint.html
           path: app/build/reports/lint-results-debug.html
+
+  unit-test:
+    needs: [lint]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - name: Run tests
+        run: ./gradlew test
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v2
+        with:
+          name: unit_test_report
+          path: app/build/reports/tests/testDebugUnitTest/
+

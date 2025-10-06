@@ -17,6 +17,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+            //comment
         setContent {
             CI_CD_BasicTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->

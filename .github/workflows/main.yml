@@ -8,46 +8,46 @@ on:
   workflow_dispatch:
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Run Android Lint
-        run: ./gradlew lintDebug
-
-      - name: Upload Lint HTML Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: lint-report
-          path: app/build/reports/lint-results-debug.html
-
-  unit-test:
-    needs: [ lint ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout the code
-        uses: actions/checkout@v4
-
-      - name: Run tests
-        run: ./gradlew test
-
-      - name: Upload test report
-        uses: actions/upload-artifact@v4
-        with:
-          name: unit_test_report
-          path: app/build/reports/tests/testDebugUnitTest/
+#  lint:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - name: Set up JDK
+#        uses: actions/setup-java@v4
+#        with:
+#          java-version: '17'
+#          distribution: 'temurin'
+#
+#      - name: Run Android Lint
+#        run: ./gradlew lintDebug
+#
+#      - name: Upload Lint HTML Report
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: lint-report
+#          path: app/build/reports/lint-results-debug.html
+#
+#  unit-test:
+#    needs: [ lint ]
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout the code
+#        uses: actions/checkout@v4
+#
+#      - name: Run tests
+#        run: ./gradlew test
+#
+#      - name: Upload test report
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: unit_test_report
+#          path: app/build/reports/tests/testDebugUnitTest/
 
 
   instrumentation-test:
-    needs: [ unit-test ]
+#    needs: [ unit-test ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

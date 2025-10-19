@@ -46,7 +46,7 @@ jobs:
 #          path: app/build/reports/tests/testDebugUnitTest/
 
   instrumentation-test:
-    runs-on: macos-latest
+    runs-on: macos-13
     timeout-minutes: 30
 
     steps:
@@ -62,14 +62,14 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Run instrumentation tests on emulator
+      - name: Run instrumentation tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 30              # 29 sometimes fails on macOS with latest images
-          target: google_apis        # required for Play services and stable startup
-          arch: x86_64               # arm64 emulators often fail on GitHub mac runners
-          profile: pixel_6           # use a stable AVD profile
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot
+          api-level: 30
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect
           disable-animations: true
           script: ./gradlew connectedCheck --stacktrace
 
@@ -79,6 +79,7 @@ jobs:
         with:
           name: instrumentation_test_report
           path: app/build/reports/androidTests/connected/
+
 
 
 

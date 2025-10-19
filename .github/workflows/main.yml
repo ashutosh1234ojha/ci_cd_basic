@@ -45,69 +45,24 @@ jobs:
 #          name: unit_test_report
 #          path: app/build/reports/tests/testDebugUnitTest/
 
-
   instrumentation-test:
-#    needs: [ unit-test ]
-    runs-on: ubuntu-latest
+    needs: [ unit-test ]
+    runs-on: macos-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout the code
+        uses: actions/checkout@v2
 
-      - name: Setup JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
-
-      - name: Run Espresso tests on emulator
-        id: espresso
+      - name: Run espresso tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 30
-          target: google_apis
-          arch: x86_64
-          profile: pixel_6
-          emulator-build: 9327183
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot
-          disable-animations: true
-          script: |
-            echo "Waiting for emulator to fully boot..."
-            booted=""
-            retries=0
-            while [ "$booted" != "1" ] && [ $retries -lt 60 ]; do
-              booted=$(adb -e shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')
-              if [ "$booted" != "1" ]; then
-                echo "Still waiting... ($retries)"
-                sleep 5
-                retries=$((retries + 1))
-              fi
-            done
+          api-level: 29
+          script: ./gradlew connectedCheck
 
-            if [ "$booted" != "1" ]; then
-              echo "❌ Emulator failed to boot in time"
-              adb shell getprop > emulator_boot_failed_props.txt || true
-              adb logcat -d > emulator_boot_failed_logcat.txt || true
-              exit 1
-            fi
-
-            echo "✅ Emulator booted successfully! Starting tests..."
-            adb shell getprop ro.build.version.sdk
-            ./gradlew connectedDebugAndroidTest
-
-      - name: Upload instrumentation test report
-        if: always()
-        uses: actions/upload-artifact@v4
+      - name: Upload test report
+        uses: actions/upload-artifact@v2
         with:
           name: instrumentation_test_report
           path: app/build/reports/androidTests/connected/
 
-      - name: Upload emulator logs (if boot failed)
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: emulator_debug_logs
-          path: |
-            emulator_boot_failed_props.txt
-            emulator_boot_failed_logcat.txt
-          if-no-files-found: ignore
+
 

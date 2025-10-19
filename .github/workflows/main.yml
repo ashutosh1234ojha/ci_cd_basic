@@ -46,23 +46,40 @@ jobs:
 #          path: app/build/reports/tests/testDebugUnitTest/
 
   instrumentation-test:
-#    needs: [ unit-test ]
     runs-on: macos-latest
+    timeout-minutes: 30
+
     steps:
-      - name: Checkout the code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Run espresso tests
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Run instrumentation tests on emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 29
-          script: ./gradlew connectedCheck
+          api-level: 30              # 29 sometimes fails on macOS with latest images
+          target: google_apis        # required for Play services and stable startup
+          arch: x86_64               # arm64 emulators often fail on GitHub mac runners
+          profile: pixel_6           # use a stable AVD profile
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot
+          disable-animations: true
+          script: ./gradlew connectedCheck --stacktrace
 
       - name: Upload test report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: instrumentation_test_report
           path: app/build/reports/androidTests/connected/
+
 
 
 
